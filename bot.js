@@ -26,7 +26,7 @@ function sendMainMenu(chatId) {
 }
 
 //* Função para enviar o menu de tópicos
-function sentTopicMenu(chatId, periodo) {
+function sentTopicMenu(chatId, data) {
   const topicosOptions = {
     reply_markup: {
       inline_keyboard: [
