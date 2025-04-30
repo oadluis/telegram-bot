@@ -60,5 +60,24 @@ bot.on("callback_query", (callbackQuery) => {
       "Escolha um tópico para ver as notícias mais relevantes:",
       topicosOptions
     );
+  } else if (data.includes("_")) {
+    const [periodo, topic] = data.split("_");
+
+    //* Define as datas com base no período escolhido
+    let fromDate, toDate;
+    const today = new Date();
+    if (periodo === "noticias_hoje") {
+      fromDate = toDate = today.toISOString().split("T")[0];
+    } else if (periodo === "noticias_semana") {
+      const lastWeek = new Date(today);
+      lastWeek.setDate(today.getDate() - 7);
+      fromDate = lastWeek.toISOString().split("T")[0];
+      toDate = today.toISOString().split("T")[0];
+    } else if (periodo === "noticias_mes") {
+      const lastMonth = new Date(today);
+      lastMonth.setMonth(today.getMonth() - 1);
+      fromDate = lastMonth.toISOString().split("T")[0];
+      toDate = today.toISOString().split("T")[0];
+    }
   }
 });
