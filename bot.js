@@ -35,21 +35,27 @@ bot.on("callback_query", async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const data = callbackQuery.data;
 
-  if (data === "noticias_hoje" || "noticias_semana" || "noticias_mes") {
+  console.log("Callback data recebido:", data);
+
+  if (
+    data === "noticias_hoje" ||
+    data === "noticias_semana" ||
+    data === "noticias_mes"
+  ) {
     const topicosOptions = {
       reply_markup: {
         inline_keyboard: [
           [
-            { text: "Tecnologia 💻", callback_data: "tech" },
-            { text: "Agropecuária 🪴", callback_data: "agro" },
+            { text: "Tecnologia 💻", callback_data: `${data}_tech` },
+            { text: "Agropecuária 🪴", callback_data: `${data}_agro` },
           ],
           [
-            { text: "Economia 🤑", callback_data: "economia" },
-            { text: "Política 🔈", callback_data: "politica" },
+            { text: "Economia 🤑", callback_data: `${data}_economia` },
+            { text: "Política 🔈", callback_data: `${data}_politica` },
           ],
           [
-            { text: "Esportes ⚽", callback_data: "esportes" },
-            { text: "Ciência 🧪", callback_data: "ciencia" },
+            { text: "Esportes ⚽", callback_data: `${data}_esportes` },
+            { text: "Ciência 🧪", callback_data: `${data}_ciencia` },
           ],
         ],
       },
@@ -61,46 +67,67 @@ bot.on("callback_query", async (callbackQuery) => {
       topicosOptions
     );
   } else if (data.includes("_")) {
-    const [periodo, topico] = data.split("_");
+    // Divide o callback_data no formato esperado: noticias_<periodo>_<topico>
+    const parts = data.split("_");
+    if (parts.length !== 3) {
+      bot.sendMessage(
+        chatId,
+        "Erro: formato de dado inválido. Por favor, tente novamente."
+      );
+      return;
+    }
+    const [_, periodo, topico] = parts; // Extração segura do período e tópico
+    console.log("Período:", periodo); // log para depuração
+    console.log("Tópico:", topico); // log para depuração
 
     //* Define as datas com base no período escolhido
     let fromDate, toDate;
     const today = new Date();
     if (periodo === "noticias_hoje") {
       fromDate = toDate = today.toISOString().split("T")[0];
+      console.log(callback_data);
     } else if (periodo === "noticias_semana") {
       const lastWeek = new Date(today);
       lastWeek.setDate(today.getDate() - 7);
       fromDate = lastWeek.toISOString().split("T")[0];
       toDate = today.toISOString().split("T")[0];
+      console.log(callback_data);
     } else if (periodo === "noticias_mes") {
       const lastMonth = new Date(today);
       lastMonth.setMonth(today.getMonth() - 1);
       fromDate = lastMonth.toISOString().split("T")[0];
       toDate = today.toISOString().split("T")[0];
+      console.log(callback_data);
     }
 
     //* Mapeia os tópicos para palavras-chave
     const topicMap = {
-      tech: "tecnologia",
-      agro: "agropecuária",
-      economia: "economia",
-      politica: "política",
-      esportes: "esportes",
-      ciencia: "ciência",
+      tech: "technology",
+      agro: "agriculture",
+      economia: "business",
+      politica: "politics",
+      esportes: "sports",
+      ciencia: "science",
     };
 
+    //* Verifica se o tópico foi mapeado corretamente
     const topic = topicMap[topico];
+    if (!topic) {
+      console.log(topic);
+      bot.sendMessage(chatId, "Tópico inválido. Por favor, tente novamente.");
+      return;
+    }
 
     //* Faz a requisição para a API
     try {
+      console.log(topic);
       const response = await axios.get("https://newsapi.org/v2/everything", {
         params: {
           q: topic,
           from: fromDate,
           to: toDate,
-          language: pt,
-          sortBy: publishedAt,
+          language: "pt",
+          sortBy: "publishedAt",
           apiKey: newsApiKey,
         },
       });
