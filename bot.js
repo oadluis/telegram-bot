@@ -31,7 +31,7 @@ bot.on("message", (msg) => {
 });
 
 //* Escolha dos topicos para ver as noticias
-bot.on("callback_query", (callbackQuery) => {
+bot.on("callback_query", async (callbackQuery) => {
   const chatId = callbackQuery.message.chat.id;
   const data = callbackQuery.data;
 
@@ -61,7 +61,7 @@ bot.on("callback_query", (callbackQuery) => {
       topicosOptions
     );
   } else if (data.includes("_")) {
-    const [periodo, topic] = data.split("_");
+    const [periodo, topico] = data.split("_");
 
     //* Define as datas com base no período escolhido
     let fromDate, toDate;
@@ -78,6 +78,51 @@ bot.on("callback_query", (callbackQuery) => {
       lastMonth.setMonth(today.getMonth() - 1);
       fromDate = lastMonth.toISOString().split("T")[0];
       toDate = today.toISOString().split("T")[0];
+    }
+
+    //* Mapeia os tópicos para palavras-chave
+    const topicMap = {
+      tech: "tecnologia",
+      agro: "agropecuária",
+      economia: "economia",
+      politica: "política",
+      esportes: "esportes",
+      ciencia: "ciência",
+    };
+
+    const topic = topicMap[topico];
+
+    //* Faz a requisição para a API
+    try {
+      const response = await axios.get("https://newsapi.org/v2/everything", {
+        params: {
+          q: topic,
+          from: fromDate,
+          to: toDate,
+          language: pt,
+          sortBy: publishedAt,
+          apiKey: newsApiKey,
+        },
+      });
+
+      const articles = response.data.articles.slice(0, 5); // limita a 5 noticias
+      if (articles.length === 0) {
+        bot.sendMessage(chatId, `Nenhuma notícia encontrada sobre ${topic}.`);
+        return;
+      }
+
+      let newsMessage = `📰 Notícias sobre ${topic} (${periodo.replace(
+        "notícias_",
+        ""
+      )}):\n\n`;
+      articles.forEach((article, index) => {
+        newsMessage += `${index + 1}. [${article.title}](${article.url})\n`;
+      });
+
+      bot.sendMessage(chatId, newsMessage, { parse_node: "Markdown" });
+    } catch (error) {
+      console.error("Erro ao buscar notícias:", error);
+      bot.sendMessage(chatId, "Desculpe, ocorreu um erro ao buscar notícias.");
     }
   }
 });
