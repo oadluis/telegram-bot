@@ -5,8 +5,11 @@ const sendTopicMenu = require('./menus/topicMenu');
 const calculateDates = require('./helpers/calculateDates');
 const fetchNews = require('./helpers/fetchNews');
 const formatMessage = require('./helpers/formatMessage');
-
 const bot = new TelegramBot(process.env.BOT_TOKEN, { polling: true });
+
+bot.on('polling_error', (error) => {
+  console.error('Erro de polling:', error);
+});
 
 bot.on('message', (msg) => {
   const chatId = msg.chat.id;
@@ -29,6 +32,15 @@ bot.on('callback_query', async (callbackQuery) => {
     sendTopicMenu(bot, chatId, data);
   } else if (data.includes('_')) {
     const [_, periodo, topico] = data.split('_');
+
+    if (!periodo || !topico) {
+      bot.sendMessage(
+        chatId,
+        'Dados inválidos recebidos. Por favor, tente novamente.'
+      );
+      return;
+    }
+
     const topicMap = {
       tech: 'technology',
       agro: 'agriculture',
@@ -39,18 +51,38 @@ bot.on('callback_query', async (callbackQuery) => {
     };
 
     const topic = topicMap[topico];
+
     if (!topic) {
       bot.sendMessage(chatId, 'Tópico inválido. Por favor, tente novamente.');
       return;
     }
 
     const { fromDate, toDate } = calculateDates(periodo);
+
+    if (!fromDate || !toDate) {
+      bot.sendMessage(
+        chatId,
+        'Erro ao calcular as datas. Por favor, tente novamente,'
+      );
+      return;
+    }
+
     const articles = await fetchNews(
+      bot,
       process.env.NEWS_API_KEY,
+      chatId,
       topic,
       fromDate,
       toDate
     );
+
+    if (!Array.isArray(articles) || articles.length === 0) {
+      bot.sendMessage(
+        chatId,
+        'Nenhuma notícia encontrada ou ocorreu um erro ao buscar notícias.'
+      );
+      return;
+    }
 
     for (const article of articles) {
       const { message, imageUrl } = formatMessage(article);

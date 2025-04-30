@@ -1,5 +1,5 @@
 //* Função para enviar o menu inicial
-function sendMainMenu(chatId) {
+function sendMainMenu(bot, chatId) {
   const options = {
     reply_markup: {
       inline_keyboard: [

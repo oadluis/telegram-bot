@@ -1,4 +1,4 @@
-function sendTopicMenu(chatId, data) {
+function sendTopicMenu(bot, chatId, data) {
   const topicosOptions = {
     reply_markup: {
       inline_keyboard: [
