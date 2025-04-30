@@ -139,24 +139,24 @@ bot.on("callback_query", async (callbackQuery) => {
       }
 
       for (const article of articles) {
-        const title = article.title || "Sem título";
+        const title = (article.title || "Sem título").toUpperCase();
         const description = article.description || "Sem descrição disponível";
         const url = article.url || "#";
         const imageUrl = article.urlToImage || null;
 
-        let message = `📰 <b>${title}</b>\n\n`;
-        message += `${description}\n\n`;
-        message += `<a href="${url}">Fonte ⛲: ${url}</a>`;
+        let message = `📰 *${title}*\n\n`;
+        message += `_${description}_\n\n`;
+        message += `[Fonte ⛲: ${url}]`;
 
         if (imageUrl) {
           // Envia a mensagem com imagem
           await bot.sendPhoto(chatId, imageUrl, {
             caption: message,
-            parse_mode: "HTML",
+            parse_mode: "Markdown",
           });
         } else {
           // Envia a mensagem sem imagem
-          await bot.sendMessage(chatId, message, { parse_node: "HTML" });
+          await bot.sendMessage(chatId, message, { parse_node: "Markdown" });
         }
 
         // let newsMessage = `📰 <b><b>Notícias sobre ${topic} (${periodo.replace(
@@ -169,6 +169,57 @@ bot.on("callback_query", async (callbackQuery) => {
 
         // bot.sendMessage(chatId, newsMessage, { parse_node: "Markdown" });
       }
+
+      const menuOptions = {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "↩️ Escolher outro tópico",
+                callback_data: "voltar_menu",
+              },
+            ],
+          ],
+        },
+      };
+
+      await bot.sendMessage(
+        chatId,
+        "Deseja escolher outro tópico? Clique no botão abaixo:",
+        menuOptions
+      );
+
+      bot.on("callback_query", async (callbackQuery) => {
+        const chatId = callbackQuery.message.chat.id;
+        const data = callbackQuery.data;
+
+        if (data === "voltar_menu") {
+          const topicosOptions = {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  { text: "Tecnologia 💻", callback_data: `${data}_tech` },
+                  { text: "Agropecuária 🪴", callback_data: `${data}_agro` },
+                ],
+                [
+                  { text: "Economia 🤑", callback_data: `${data}_economia` },
+                  { text: "Política 🔈", callback_data: `${data}_politica` },
+                ],
+                [
+                  { text: "Esportes ⚽", callback_data: `${data}_esportes` },
+                  { text: "Ciência 🧪", callback_data: `${data}_ciencia` },
+                ],
+              ],
+            },
+          };
+
+          await bot.sendMessage(
+            chatId,
+            "Escolhe um tópico para ver as notícias mais relevantes:",
+            topicosOptions
+          );
+        }
+      });
     } catch (error) {
       console.error("Erro ao buscar notícias:", error);
       bot.sendMessage(chatId, "Desculpe, ocorreu um erro ao buscar notícias.");
