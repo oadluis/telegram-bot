@@ -138,15 +138,37 @@ bot.on("callback_query", async (callbackQuery) => {
         return;
       }
 
-      let newsMessage = `📰 Notícias sobre ${topic} (${periodo.replace(
-        "notícias_",
-        ""
-      )}):\n\n`;
-      articles.forEach((article, index) => {
-        newsMessage += `${index + 1}. [${article.title}](${article.url})\n`;
-      });
+      for (const article of articles) {
+        const title = article.title || "Sem título";
+        const description = article.description || "Sem descrição disponível";
+        const url = article.url || "#";
+        const imageUrl = article.urlToImage || null;
 
-      bot.sendMessage(chatId, newsMessage, { parse_node: "Markdown" });
+        let message = `📰 <b>${title}</b>\n\n`;
+        message += `${description}\n\n`;
+        message += `<a href="${url}">Fonte ⛲: ${url}</a>`;
+
+        if (imageUrl) {
+          // Envia a mensagem com imagem
+          await bot.sendPhoto(chatId, imageUrl, {
+            caption: message,
+            parse_mode: "HTML",
+          });
+        } else {
+          // Envia a mensagem sem imagem
+          await bot.sendMessage(chatId, message, { parse_node: "HTML" });
+        }
+
+        // let newsMessage = `📰 <b><b>Notícias sobre ${topic} (${periodo.replace(
+        //   "notícias_",
+        //   ""
+        // )}):\n\n`;
+        // articles.forEach((article, index) => {
+        //   newsMessage += `${index + 1}. [${article.title}](${article.url})\n`;
+        // });
+
+        // bot.sendMessage(chatId, newsMessage, { parse_node: "Markdown" });
+      }
     } catch (error) {
       console.error("Erro ao buscar notícias:", error);
       bot.sendMessage(chatId, "Desculpe, ocorreu um erro ao buscar notícias.");
