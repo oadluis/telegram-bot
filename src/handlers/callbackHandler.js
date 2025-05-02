@@ -1,8 +1,9 @@
 const sendMainMenu = require('../menus/mainMenu');
 const sendTechMenu = require('../menus/sections/techMenu');
-const sendScienceMenu = require('../menus/sections/scienceMenu');
 const fetchNews = require('../helpers/fetchNews');
+const sendScienceMenu = require('../menus/sections/scienceMenu');
 const calculateDates = require('../helpers/calculateDates');
+const { topicMap, messages } = require('../utils/constants');
 
 module.exports = (bot) => {
   bot.on('callback_query', (query) => {
