@@ -3,7 +3,7 @@ function sendTopicMenu(bot, chatId, data) {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: 'Tecnologia 💻', callback_data: `${data}_tech` },
+          { text: 'Tecnologia 💻', callback_data: `section_tech` },
           { text: 'Agropecuária 🪴', callback_data: `${data}_agro` },
         ],
         [
@@ -20,8 +20,8 @@ function sendTopicMenu(bot, chatId, data) {
 
   bot.sendMessage(
     chatId,
-    'Escolha um tópico para ver as notícias mais relevantes',
-    topicosOptions
+    'Escolha uma seção para explorar os tópicos:',
+    sectionOptions
   );
 }
 
