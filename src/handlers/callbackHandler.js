@@ -3,10 +3,11 @@ const sendTechMenu = require('../menus/sections/techMenu');
 const fetchNews = require('../helpers/fetchNews');
 const sendScienceMenu = require('../menus/sections/scienceMenu');
 const calculateDates = require('../helpers/calculateDates');
+const sendArticles = require('../helpers/sendArticles');
 const { topicMap, messages } = require('../utils/constants');
 
 module.exports = (bot) => {
-  bot.on('callback_query', (query) => {
+  bot.on('callback_query', async (query) => {
     console.log(query);
     const chatId = query.message.chat.id;
     const data = query.data;
@@ -35,6 +36,26 @@ module.exports = (bot) => {
           fromDate,
           toDate
         );
+
+        if ((!Array, isArray(articles) || articles.length === 0)) {
+          bot.sendMessage(chatId, messages.noNews);
+          break;
+        }
+
+        await sendArticles(bot, chatId, articles);
+
+        bot.sendMessage(chatId, messages.chooseAnotherTopic, {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: '↩️ Escolher outro tópico',
+                  callback_data: 'back_to_main',
+                },
+              ],
+            ],
+          },
+        });
         break;
 
       default:
