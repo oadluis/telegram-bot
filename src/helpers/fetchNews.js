@@ -43,3 +43,5 @@ async function fetchNews(bot, newsApiKey, chatId, topic, fromDate, toDate) {
 }
 
 module.exports = fetchNews;
+
+// commit of day! :)
