@@ -2,6 +2,7 @@ const calculateDates = require('../helpers/calculateDates');
 const fetchNews = require('../helpers/fetchNews');
 const sendArticles = require('../helpers/sendArticles');
 const sendMainMenu = require('../menus/mainMenu');
+const sendTopicMenu = require('../menus/topicMenu');
 const sendScienceMenu = require('../menus/sections/scienceMenu');
 const sendSportsMenu = require('../menus/sections/sportsMenu');
 const sendTechMenu = require('../menus/sections/techMenu');
@@ -18,12 +19,10 @@ module.exports = (bot) => {
 
       switch (true) {
         // Caso o usuário selecione um período
-        case data.startsWith('noticias_'): // Exemplo: noticias_semana
+        case data.startsWith('noticias_'):
           try {
             const periodo = data.split('_')[1];
             const { fromDate, toDate } = calculateDates(periodo);
-
-            // Mostra as seções disponíveis, passando o período no callback_data
             const sectionOptions = {
               reply_markup: {
                 inline_keyboard: [

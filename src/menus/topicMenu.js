@@ -4,15 +4,15 @@ function sendTopicMenu(bot, chatId, data) {
       inline_keyboard: [
         [
           { text: 'Tecnologia 💻', callback_data: `section_tech` },
-          { text: 'Agropecuária 🪴', callback_data: `${data}_agro` },
+          { text: 'Agropecuária 🪴', callback_data: `section_agro` },
         ],
         [
-          { text: 'Economia 🤑', callback_data: `${data}_economia` },
-          { text: 'Política 🔈', callback_data: `${data}_politica` },
+          { text: 'Economia 🤑', callback_data: `section_economia` },
+          { text: 'Política 🔈', callback_data: `section_politica` },
         ],
         [
-          { text: 'Esportes ⚽', callback_data: `${data}_esportes` },
-          { text: 'Ciência 🧪', callback_data: `${data}_ciencia` },
+          { text: 'Esportes ⚽', callback_data: `section_esportes` },
+          { text: 'Ciência 🧪', callback_data: `section_ciencia` },
         ],
       ],
     },

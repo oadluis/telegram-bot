@@ -5,18 +5,21 @@ function sendEnvironmentMenu(bot, chatId) {
         [
           {
             text: 'Sustentabilidade 🌱',
-            callback_data: 'environment_sustainability',
+            callback_data: `topic_sustainability_${fromDate}_${toDate}`,
           },
           {
             text: 'Energias Renováveis ⚡',
-            callback_data: 'environment_renewables',
+            callback_data: `topic_renewables_${fromDate}_${toDate}`,
           },
         ],
         [
-          { text: 'Conservação 🐾', callback_data: 'environment_conservation' },
+          {
+            text: 'Conservação 🐾',
+            callback_data: `topic_conservation_${fromDate}_${toDate}`,
+          },
           {
             text: 'Mudanças Climáticas 🌍',
-            callback_data: 'environment_climate',
+            callback_data: `topic_climate_${fromDate}_${toDate}`,
           },
         ],
         [{ text: '⬅️ Voltar', callback_data: 'back_to_main' }],

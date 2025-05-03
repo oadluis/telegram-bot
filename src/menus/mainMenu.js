@@ -1,4 +1,3 @@
-//* Função para enviar o menu inicial
 function sendMainMenu(bot, chatId) {
   const options = {
     reply_markup: {
