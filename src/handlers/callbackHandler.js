@@ -8,7 +8,7 @@ const sendTechMenu = require('../menus/sections/techMenu');
 const sendHealthMenu = require('../menus/sections/healthMenu');
 const sendEntertainmentMenu = require('../menus/sections/entertainmentMenu');
 const sendEnvironmentMenu = require('../menus/sections/environmentMenu');
-const { topicMap, messages } = require('../utils/constants');
+const { messages } = require('../utils/constants');
 
 module.exports = (bot) => {
   bot.on('callback_query', async (query) => {
@@ -17,41 +17,56 @@ module.exports = (bot) => {
       const data = query.data;
 
       switch (true) {
-        case data === 'section_tech':
-          sendTechMenu(bot, chatId);
-          break;
-
-        case data === 'section_science':
-          sendScienceMenu(bot, chatId);
-          break;
-
-        case data === 'section_sports':
-          sendSportsMenu(bot, chatId);
-          break;
-
-        case data === 'section_health':
-          sendHealthMenu(bot, chatId);
-          break;
-
-        case data === 'section_entertainment':
-          sendEntertainmentMenu(bot, chatId);
-          break;
-
-        case data === 'section_environment':
-          sendEnvironmentMenu(bot, chatId);
-          break;
-
-        case data === 'back_to_main':
-          sendMainMenu(bot, chatId);
-          break;
-
-        case data.startsWith('noticias_'): // Novo caso para lidar com períodos
+        // Caso o usuário selecione um período
+        case data.startsWith('noticias_'): // Exemplo: noticias_semana
           try {
             const periodo = data.split('_')[1];
             const { fromDate, toDate } = calculateDates(periodo);
 
-            bot.sendMessage(chatId, `Período selecionado: ${periodo}`);
-            bot.sendMessage(chatId, `De: ${fromDate} Até: ${toDate}`);
+            // Mostra as seções disponíveis, passando o período no callback_data
+            const sectionOptions = {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    {
+                      text: 'Tecnologia 💻',
+                      callback_data: `section_tech_${fromDate}_${toDate}`,
+                    },
+                    {
+                      text: 'Ciência 🧪',
+                      callback_data: `section_science_${fromDate}_${toDate}`,
+                    },
+                  ],
+                  [
+                    {
+                      text: 'Esportes ⚽',
+                      callback_data: `section_sports_${fromDate}_${toDate}`,
+                    },
+                    {
+                      text: 'Saúde 🏥',
+                      callback_data: `section_health_${fromDate}_${toDate}`,
+                    },
+                  ],
+                  [
+                    {
+                      text: 'Entretenimento 🎬',
+                      callback_data: `section_entertainment_${fromDate}_${toDate}`,
+                    },
+                    {
+                      text: 'Meio Ambiente 🌱',
+                      callback_data: `section_environment_${fromDate}_${toDate}`,
+                    },
+                  ],
+                  [{ text: '⬅️ Voltar', callback_data: 'back_to_main' }],
+                ],
+              },
+            };
+
+            bot.sendMessage(
+              chatId,
+              'Escolha uma seção para explorar:',
+              sectionOptions
+            );
           } catch (error) {
             console.error('Erro ao calcular datas:', error);
             bot.sendMessage(
@@ -61,15 +76,52 @@ module.exports = (bot) => {
           }
           break;
 
-        case data.startsWith('tech_'):
-        case data.startsWith('science_'):
-        case data.startsWith('sports_'):
-        case data.startsWith('health_'):
-        case data.startsWith('entertainment_'):
-        case data.startsWith('environment_'):
+        // Caso o usuário selecione uma seção
+        case data.startsWith('section_'): // Exemplo: section_tech_2025-04-01_2025-04-30
           try {
-            const [section, topic] = data.split('_');
-            const { fromDate, toDate } = calculateDates('hoje');
+            const [_, section, fromDate, toDate] = data.split('_');
+
+            // Mostra os tópicos disponíveis na seção, passando o período no callback_data
+            switch (section) {
+              case 'tech':
+                sendTechMenu(bot, chatId, fromDate, toDate);
+                break;
+              case 'science':
+                sendScienceMenu(bot, chatId, fromDate, toDate);
+                break;
+              case 'sports':
+                sendSportsMenu(bot, chatId, fromDate, toDate);
+                break;
+              case 'health':
+                sendHealthMenu(bot, chatId, fromDate, toDate);
+                break;
+              case 'entertainment':
+                sendEntertainmentMenu(bot, chatId, fromDate, toDate);
+                break;
+              case 'environment':
+                sendEnvironmentMenu(bot, chatId, fromDate, toDate);
+                break;
+              default:
+                bot.sendMessage(
+                  chatId,
+                  'Seção não reconhecida. Por favor, tente novamente.'
+                );
+            }
+          } catch (error) {
+            console.error('Erro ao processar a seção:', error);
+            bot.sendMessage(
+              chatId,
+              'Erro ao processar a seção. Por favor, tente novamente.'
+            );
+          }
+          break;
+
+        // Caso o usuário selecione um tópico
+        case data.startsWith('topic_'): // Exemplo: topic_ai_2025-04-01_2025-04-30
+          try {
+            const [_, topic, fromDate, toDate] = data.split('_');
+
+            // Busca as notícias com base no tópico e no período
             const articles = await fetchNews(
               bot,
               process.env.NEWS_API_KEY,
