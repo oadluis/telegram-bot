@@ -1,3 +1,15 @@
+const calculateDates = require('../helpers/calculateDates');
+const fetchNews = require('../helpers/fetchNews');
+const sendArticles = require('../helpers/sendArticles');
+const sendMainMenu = require('../menus/mainMenu');
+const sendScienceMenu = require('../menus/sections/scienceMenu');
+const sendSportsMenu = require('../menus/sections/sportsMenu');
+const sendTechMenu = require('../menus/sections/techMenu');
+const sendHealthMenu = require('../menus/sections/healthMenu');
+const sendEntertainmentMenu = require('../menus/sections/entertainmentMenu');
+const sendEnvironmentMenu = require('../menus/sections/environmentMenu');
+const { topicMap, messages } = require('../utils/constants');
+
 module.exports = (bot) => {
   bot.on('callback_query', async (query) => {
     try {
