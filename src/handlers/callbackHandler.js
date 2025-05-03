@@ -1,9 +1,10 @@
-const sendMainMenu = require('../menus/mainMenu');
-const sendTechMenu = require('../menus/sections/techMenu');
-const fetchNews = require('../helpers/fetchNews');
-const sendScienceMenu = require('../menus/sections/scienceMenu');
 const calculateDates = require('../helpers/calculateDates');
+const fetchNews = require('../helpers/fetchNews');
 const sendArticles = require('../helpers/sendArticles');
+const sendMainMenu = require('../menus/mainMenu');
+const sendScienceMenu = require('../menus/sections/scienceMenu');
+const sendSportsMenu = require('../menus/sections/sportsMenu');
+const sendTechMenu = require('../menus/sections/techMenu');
 const { topicMap, messages } = require('../utils/constants');
 
 module.exports = (bot) => {
@@ -20,6 +21,10 @@ module.exports = (bot) => {
 
         case data === 'section_science':
           sendScienceMenu(bot, chatId);
+          break;
+
+        case data === 'section_sports':
+          sendSportsMenu(bot, chatId);
           break;
 
         case data === 'back_to_main':
