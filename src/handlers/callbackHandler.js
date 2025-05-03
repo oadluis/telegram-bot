@@ -8,58 +8,66 @@ const { topicMap, messages } = require('../utils/constants');
 
 module.exports = (bot) => {
   bot.on('callback_query', async (query) => {
-    console.log(query);
-    const chatId = query.message.chat.id;
-    const data = query.data;
+    try {
+      console.log(query);
+      const chatId = query.message.chat.id;
+      const data = query.data;
 
-    switch (true) {
-      case data === 'section_tech':
-        sendTechMenu(bot, chatId);
-        break;
-
-      case data === 'section_science':
-        sendScienceMenu(bot, chatId);
-        break;
-
-      case data === 'back_to_main':
-        sendMainMenu(bot, chatId);
-        break;
-
-      case data.startsWith('tech_'):
-        const topic = data.split('_')[1];
-        const { fromDate, toDate } = calculateDates('hoje');
-        fetchNews(
-          bot,
-          process.env.NEWS_API_KEY,
-          chatId,
-          topic,
-          fromDate,
-          toDate
-        );
-
-        if ((!Array, isArray(articles) || articles.length === 0)) {
-          bot.sendMessage(chatId, messages.noNews);
+      switch (true) {
+        case data === 'section_tech':
+          sendTechMenu(bot, chatId);
           break;
-        }
 
-        await sendArticles(bot, chatId, articles);
+        case data === 'section_science':
+          sendScienceMenu(bot, chatId);
+          break;
 
-        bot.sendMessage(chatId, messages.chooseAnotherTopic, {
-          reply_markup: {
-            inline_keyboard: [
-              [
-                {
-                  text: '↩️ Escolher outro tópico',
-                  callback_data: 'back_to_main',
-                },
+        case data === 'back_to_main':
+          sendMainMenu(bot, chatId);
+          break;
+
+        case data.startsWith('tech_'):
+          const topic = data.split('_')[1];
+          const { fromDate, toDate } = calculateDates('hoje');
+          const articles = await fetchNews(
+            bot,
+            process.env.NEWS_API_KEY,
+            chatId,
+            topic,
+            fromDate,
+            toDate
+          );
+
+          if ((!Array, isArray(articles) || articles.length === 0)) {
+            bot.sendMessage(chatId, messages.noNews);
+            break;
+          }
+
+          await sendArticles(bot, chatId, articles);
+
+          bot.sendMessage(chatId, messages.chooseAnotherTopic, {
+            reply_markup: {
+              inline_keyboard: [
+                [
+                  {
+                    text: '↩️ Escolher outro tópico',
+                    callback_data: 'back_to_main',
+                  },
+                ],
               ],
-            ],
-          },
-        });
-        break;
+            },
+          });
+          break;
 
-      default:
-        console.log(`Callback não reconhecido: ${data}`);
+        default:
+          console.log(`Callback não reconhecido: ${data}`);
+      }
+    } catch (error) {
+      console.error('Erro no callback handler:', error);
+      bot.sendMessage(
+        query.message.chat.id,
+        'Ocorreu um erro inesperado. Por favor, tente novamente.'
+      );
     }
   });
 };
