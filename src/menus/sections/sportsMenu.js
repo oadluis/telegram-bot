@@ -1,4 +1,4 @@
-module.exports = (bot, chatId) => {
+function sendSportsMenu(bot, chatId) {
   const sportsOptions = {
     reply_markup: {
       inline_keybord: [
@@ -16,4 +16,6 @@ module.exports = (bot, chatId) => {
   };
 
   bot.sendMessage(chatId, 'Escolha um tópico de Esportes:', sportsOptions);
-};
+}
+
+module.exports = sendSportsMenu;
