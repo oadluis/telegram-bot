@@ -3,14 +3,14 @@ function sendEntertainmentMenu(bot, chatId) {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: 'Filmes 🎥', callback_data: 'entertainment_movies' },
-          { text: 'Música 🎵', callback_data: 'entertainment_music' },
+          { text: 'Filmes 🎥', callback_data: `entertainment_movies_${fromDate}_${toDate}` },
+          { text: 'Música 🎵', callback_data: `entertainment_music_${fromDate}_${toDate}` },
         ],
         [
-          { text: 'Jogos 🎮', callback_data: 'entertainment_games' },
-          { text: 'Séries 📺', callback_data: 'entertainment_series' },
+          { text: 'Jogos 🎮', callback_data: `entertainment_games_${fromDate}_${toDate}` },
+          { text: 'Séries 📺', callback_data: `entertainment_series_${fromDate}_${toDate}` },
         ],
-        [{ text: '⬅️ Voltar', callback_data: 'back_to_main' }],
+        [{ text: '⬅️ Voltar', callback_data: 'back_to_sections' }],
       ],
     },
   };

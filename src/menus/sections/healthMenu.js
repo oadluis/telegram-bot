@@ -3,14 +3,26 @@ module.exports = (bot, chatId) => {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: 'Nutrição 🥗', callback_data: 'health_nutrition' },
-          { text: 'Exercícios 🏋️', callback_data: 'health_exercise' },
+          {
+            text: 'Nutrição 🥗',
+            callback_data: `health_nutrition_${fromDate}_${toDate}`,
+          },
+          {
+            text: 'Exercícios 🏋️',
+            callback_data: `health_exercise_${fromDate}_${toDate}`,
+          },
         ],
         [
-          { text: 'Medicina 🏥', callback_data: 'health_medicine' },
-          { text: 'Bem-estar 🧘', callback_data: 'health_wellness' },
+          {
+            text: 'Medicina 🏥',
+            callback_data: `health_medicine_${fromDate}_${toDate}`,
+          },
+          {
+            text: 'Bem-estar 🧘',
+            callback_data: `health_wellness_${fromDate}_${toDate}`,
+          },
         ],
-        [{ text: '⬅️ Voltar', callback_data: 'back_to_main' }],
+        [{ text: '⬅️ Voltar', callback_data: 'back_to_sections' }],
       ],
     },
   };
