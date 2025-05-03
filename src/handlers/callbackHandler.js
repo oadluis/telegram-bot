@@ -27,36 +27,44 @@ module.exports = (bot) => {
           break;
 
         case data.startsWith('tech_'):
-          const topic = data.split('_')[1];
-          const { fromDate, toDate } = calculateDates('hoje');
-          const articles = await fetchNews(
-            bot,
-            process.env.NEWS_API_KEY,
-            chatId,
-            topic,
-            fromDate,
-            toDate
-          );
+          try {
+            const topic = data.split('_')[1];
+            const { fromDate, toDate } = calculateDates('hoje');
+            const articles = await fetchNews(
+              bot,
+              process.env.NEWS_API_KEY,
+              chatId,
+              topic,
+              fromDate,
+              toDate
+            );
 
-          if ((!Array, isArray(articles) || articles.length === 0)) {
-            bot.sendMessage(chatId, messages.noNews);
-            break;
-          }
+            if ((!Array, isArray(articles) || articles.length === 0)) {
+              bot.sendMessage(chatId, messages.noNews);
+              break;
+            }
 
-          await sendArticles(bot, chatId, articles);
+            await sendArticles(bot, chatId, articles);
 
-          bot.sendMessage(chatId, messages.chooseAnotherTopic, {
-            reply_markup: {
-              inline_keyboard: [
-                [
-                  {
-                    text: '↩️ Escolher outro tópico',
-                    callback_data: 'back_to_main',
-                  },
+            bot.sendMessage(chatId, messages.chooseAnotherTopic, {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    {
+                      text: '↩️ Escolher outro tópico',
+                      callback_data: 'back_to_main',
+                    },
+                  ],
                 ],
-              ],
-            },
-          });
+              },
+            });
+          } catch (error) {
+            console.error('Erro ao calcular datas:', error);
+            bot.sendMessage(
+              chatId,
+              'Ocorreu um erro ao calcular as datas. Por favor, tente novamente.'
+            );
+          }
           break;
 
         default:
