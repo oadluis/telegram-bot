@@ -1,4 +1,4 @@
-function sendScienceMenu(bot, chatId) {
+function sendScienceMenu(bot, chatId, fromDate, toDate) {
   const scienceOptions = {
     reply_markup: {
       inline_keyboard: [

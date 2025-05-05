@@ -1,5 +1,5 @@
-function sendTopicMenu(bot, chatId, data) {
-  const topicosOptions = {
+function sendTopicMenu(bot, chatId) {
+  const sectionsOptions = {
     reply_markup: {
       inline_keyboard: [
         [
@@ -21,7 +21,7 @@ function sendTopicMenu(bot, chatId, data) {
   bot.sendMessage(
     chatId,
     'Escolha uma seção para explorar os tópicos:',
-    sectionOptions
+    sectionsOptions
   );
 }
 

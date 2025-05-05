@@ -1,7 +1,7 @@
-function sendSportsMenu(bot, chatId) {
+function sendSportsMenu(bot, chatId, fromDate, toDate) {
   const sportsOptions = {
     reply_markup: {
-      inline_keybord: [
+      inline_keyboard: [
         [
           { text: 'Futebol ⚽', callback_data: `sports_football_${fromDate}_${toDate}` },
           { text: 'Basquete 🏀', callback_data: `sports_basketball_${fromDate}_${toDate}` },

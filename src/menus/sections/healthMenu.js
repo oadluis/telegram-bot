@@ -1,4 +1,4 @@
-module.exports = (bot, chatId) => {
+module.exports = (bot, chatId, fromDate, toDate) => {
   const healthOptions = {
     reply_markup: {
       inline_keyboard: [

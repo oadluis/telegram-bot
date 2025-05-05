@@ -9,13 +9,26 @@ const sendTechMenu = require('../menus/sections/techMenu');
 const sendHealthMenu = require('../menus/sections/healthMenu');
 const sendEntertainmentMenu = require('../menus/sections/entertainmentMenu');
 const sendEnvironmentMenu = require('../menus/sections/environmentMenu');
-const { messages } = require('../utils/constants');
+const { messages, callbacks } = require('../utils/constants');
 
 module.exports = (bot) => {
   bot.on('callback_query', async (query) => {
     try {
       const chatId = query.message.chat.id;
       const data = query.data;
+
+      // Tratamento dos botões de navegação
+      if (data === callbacks.BACK_TO_MAIN) {
+        sendMainMenu(bot, chatId);
+        return;
+      }
+
+      if (data === callbacks.BACK_TO_SECTIONS) {
+        // Aqui você pode implementar a lógica para voltar ao menu de seções
+        // Por exemplo, enviar o menu de tópicos novamente
+        sendTopicMenu(bot, chatId);
+        return;
+      }
 
       switch (true) {
         // Caso o usuário selecione um período
@@ -56,7 +69,7 @@ module.exports = (bot) => {
                       callback_data: `section_environment_${fromDate}_${toDate}`,
                     },
                   ],
-                  [{ text: '⬅️ Voltar', callback_data: 'back_to_main' }],
+                  [{ text: '⬅️ Voltar', callback_data: callbacks.BACK_TO_MAIN }],
                 ],
               },
             };
@@ -76,7 +89,7 @@ module.exports = (bot) => {
           break;
 
         // Caso o usuário selecione uma seção
-        case data.startsWith('section_'): // Exemplo: section_tech_2025-04-01_2025-04-30
+        case data.startsWith('section_'):
           try {
             const [_, section, fromDate, toDate] = data.split('_');
 
@@ -116,7 +129,7 @@ module.exports = (bot) => {
           break;
 
         // Caso o usuário selecione um tópico
-        case data.startsWith('topic_'): // Exemplo: topic_ai_2025-04-01_2025-04-30
+        case data.startsWith('topic_'):
           try {
             const [_, topic, fromDate, toDate] = data.split('_');
 
@@ -143,7 +156,7 @@ module.exports = (bot) => {
                   [
                     {
                       text: '↩️ Escolher outro tópico',
-                      callback_data: 'back_to_main',
+                      callback_data: callbacks.BACK_TO_SECTIONS,
                     },
                   ],
                 ],

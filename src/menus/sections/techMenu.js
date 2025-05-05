@@ -1,7 +1,7 @@
-function sendTechMenu(bot, chatId) {
+function sendTechMenu(bot, chatId, fromDate, toDate) {
   const techTopicsOptions = {
     reply_markup: {
-      inline_keybord: [
+      inline_keyboard: [
         [
           {
             text: 'Tecnologia Geral 💻',

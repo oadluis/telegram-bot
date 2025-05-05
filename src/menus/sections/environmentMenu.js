@@ -1,4 +1,4 @@
-function sendEnvironmentMenu(bot, chatId) {
+function sendEnvironmentMenu(bot, chatId, fromDate, toDate) {
   const environmentOptions = {
     reply_markup: {
       inline_keyboard: [

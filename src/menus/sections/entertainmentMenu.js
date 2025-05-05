@@ -1,4 +1,4 @@
-function sendEntertainmentMenu(bot, chatId) {
+function sendEntertainmentMenu(bot, chatId, fromDate, toDate) {
   const entertainmentOptions = {
     reply_markup: {
       inline_keyboard: [
