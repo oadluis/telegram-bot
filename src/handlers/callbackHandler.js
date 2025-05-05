@@ -24,9 +24,15 @@ module.exports = (bot) => {
       }
 
       if (data === callbacks.BACK_TO_SECTIONS) {
-        // Aqui você pode implementar a lógica para voltar ao menu de seções
-        // Por exemplo, enviar o menu de tópicos novamente
-        sendTopicMenu(bot, chatId);
+        // Volta para o menu de seções com o mesmo período
+        const lastMessage = query.message.text;
+        if (lastMessage.includes('notícias')) {
+          // Se estiver vindo das notícias, volta para o menu principal
+          sendMainMenu(bot, chatId);
+        } else {
+          // Se estiver vindo de uma seção, volta para o menu de seções
+          sendTopicMenu(bot, chatId);
+        }
         return;
       }
 
@@ -131,7 +137,7 @@ module.exports = (bot) => {
         // Caso o usuário selecione um tópico
         case data.startsWith('topic_'):
           try {
-            const [_, topic, fromDate, toDate] = data.split('_');
+            const [_, section, topic, fromDate, toDate] = data.split('_');
 
             // Busca as notícias com base no tópico e no período
             const articles = await fetchNews(
@@ -150,18 +156,27 @@ module.exports = (bot) => {
 
             await sendArticles(bot, chatId, articles);
 
-            bot.sendMessage(chatId, messages.chooseAnotherTopic, {
+            // Envia o menu de navegação após as notícias
+            const navigationOptions = {
               reply_markup: {
                 inline_keyboard: [
                   [
                     {
                       text: '↩️ Escolher outro tópico',
-                      callback_data: callbacks.BACK_TO_SECTIONS,
+                      callback_data: `section_${section}_${fromDate}_${toDate}`,
+                    },
+                  ],
+                  [
+                    {
+                      text: '🔄 Escolher outro período',
+                      callback_data: callbacks.BACK_TO_MAIN,
                     },
                   ],
                 ],
               },
-            });
+            };
+
+            bot.sendMessage(chatId, messages.chooseAnotherTopic, navigationOptions);
           } catch (error) {
             console.error('Erro ao buscar notícias:', error);
             bot.sendMessage(
