@@ -13,9 +13,14 @@ async function fetchNews(bot, newsApiKey, chatId, topic, fromDate, toDate) {
       return [];
     }
 
+    // Ajusta a query para melhorar resultados do período "hoje"
+    const searchQuery = fromDate === toDate 
+      ? `${topic} (${fromDate})` 
+      : topic;
+
     const response = await axios.get('https://newsapi.org/v2/everything', {
       params: {
-        q: topic,
+        q: searchQuery,
         from: fromDate,
         to: toDate,
         language: 'pt',

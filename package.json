@@ -4,7 +4,8 @@
   "description": "Telegram bot with node js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
+    "test:watch": "jest --watch",
     "dev": "nodemon src/index.js"
   },
   "repository": {
@@ -21,5 +22,11 @@
     "axios": "^1.9.0",
     "dotenv": "^16.5.0",
     "node-telegram-bot-api": "^0.66.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "@babel/core": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "babel-jest": "^29.7.0"
   }
-}
+} 

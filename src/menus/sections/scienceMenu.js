@@ -1,3 +1,5 @@
+const { callbacks } = require('../../utils/constants');
+
 function sendScienceMenu(bot, chatId, fromDate, toDate) {
   const scienceOptions = {
     reply_markup: {
@@ -5,24 +7,24 @@ function sendScienceMenu(bot, chatId, fromDate, toDate) {
         [
           {
             text: 'Espaço 🚀',
-            callback_data: `science_space_${fromDate}_${toDate}`,
+            callback_data: `topic_science_space_${fromDate}_${toDate}`,
           },
           {
             text: 'Física ⚛️',
-            callback_data: `science_physics_${fromDate}_${toDate}`,
+            callback_data: `topic_science_physics_${fromDate}_${toDate}`,
           },
         ],
         [
           {
             text: 'Biologia 🧬',
-            callback_data: `science_biology_${fromDate}_${toDate}`,
+            callback_data: `topic_science_biology_${fromDate}_${toDate}`,
           },
           {
             text: 'Clima 🌦️',
-            callback_data: `science_climate_${fromDate}_${toDate}`,
+            callback_data: `topic_science_climate_${fromDate}_${toDate}`,
           },
         ],
-        [{ text: '⬅️ Voltar', callback_data: 'back_to_sections' }],
+        [{ text: '⬅️ Voltar', callback_data: callbacks.BACK_TO_SECTIONS }],
       ],
     },
   };

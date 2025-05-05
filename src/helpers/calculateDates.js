@@ -5,7 +5,11 @@ function calculateDates(periodo) {
     throw new Error('Período inválido: deve ser uma string não vazia');
   }
 
+  // Ajusta para o timezone local
   const today = new Date();
+  const offset = today.getTimezoneOffset();
+  today.setMinutes(today.getMinutes() - offset);
+
   let fromDate, toDate;
 
   // Normaliza o período para minúsculas para comparação
@@ -14,6 +18,7 @@ function calculateDates(periodo) {
   try {
     switch (periodoNormalizado) {
       case 'hoje':
+        // Para o período "hoje", usamos a data atual
         fromDate = toDate = today.toISOString().split('T')[0];
         break;
 
